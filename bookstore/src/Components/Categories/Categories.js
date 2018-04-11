@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import Card, { CardActions, CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import './Categories.css'
@@ -52,4 +52,4 @@ class Categories extends Component {
 
 }
 
-export default Categories;
+export default withRouter(Categories);

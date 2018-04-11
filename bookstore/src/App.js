@@ -13,9 +13,7 @@ import AddBook from './Components/AddBook/AddBook'
 import AddCategory from './Components/AddCategory/AddCategory'
 import Or from './Components/OrAdd/OrAdd'
 import bookstore from './Function'
-
-
-
+import SimpleModal from './Components/ModalEdit/ModalEdit'
 
 class App extends Component {
   constructor(props) {
@@ -23,18 +21,20 @@ class App extends Component {
     this.state = {
       selectedTab: 0,
       library: [],
-      categories: []
+      categories: [],
+      editVisible: false,
+      editBookId: ''
     }
   }
 
 
   componentDidMount = () => {
     bookstore.listBooks()
-    .then((library)=> {this.setState({library})})
-    .then(()=> {
-      bookstore.listCategories()
-      .then((categories)=>{this.setState({categories})})
-    })
+      .then((library) => { this.setState({ library }) })
+      .then(() => {
+        bookstore.listCategories()
+          .then((categories) => { this.setState({ categories }) })
+      })
   }
 
   handleChange = (event, selectedTab) => {
@@ -46,37 +46,68 @@ class App extends Component {
       .then(library => {
         this.setState({ library })
       })
-      .then(()=>{
+      .then(() => {
         this.updateCategories()
       })
   }
 
   updateCategories = () => {
     bookstore.listCategories()
-    .then(categories=> {
-      let _categories = []
-      categories.map(category => {
-        return bookstore.getBooksByCategory(category.name)
-        .then(filteredBooks=> {
-          let name = category.name
-          let bookCount = filteredBooks.length
-          _categories.push({name, bookCount})
-        })
-        .then(()=>this.setState({categories: _categories}))
+      .then(categories => {
+        let _categories = []
+        categories.map(category => {
+          return bookstore.getBooksByCategory(category.name)
+            .then(filteredBooks => {
+              let name = category.name
+              let bookCount = filteredBooks.length
+              _categories.push({ name, bookCount })
+            })
+            .then(() => this.setState({ categories: _categories }))
 
+        })
       })
-    })
   }
 
   showBooksByCategory = (category) => {
     bookstore.getBooksByCategory(category)
-    .then(filteredBooks=>this.setState({library: filteredBooks}))
+      .then(filteredBooks =>
+        this.setState({
+          library: filteredBooks,
+          selectedTab: 0
+        }))
+  }
+
+  deleteBook = (id) => {
+    bookstore.deleteBook(id)
+      .then(() => {
+        this.updateLibrary()
+        this.updateCategories()
+      })
+  }
+
+  openEditModal = (id) => {
+    this.setState(
+      {
+        editVisible: true,
+        editBookId: id
+      }
+    )
+  }
+
+  closeEditModal = () => {
+    this.setState(
+      { editVisible: false }
+    )
+  }
+
+  editBook = (id) => {
+
   }
 
 
   render() {
 
-    const classes  = {
+    const classes = {
       tabLink: {
         display: "flex",
         alignItems: "center",
@@ -100,10 +131,10 @@ class App extends Component {
 
             <AddBook
               onCreateNewBook={this.updateLibrary}
-              categories = {this.state.categories}
+              categories={this.state.categories}
             />
             <Or />
-            <AddCategory 
+            <AddCategory
               onCreateNewCategory={this.updateCategories}
             />
 
@@ -129,14 +160,14 @@ class App extends Component {
                   component={Link}
                   to='/' />}
 
-                />
+            />
                 <Tab icon={<ContentPaste />}
                   label="CATEGORIES"
                   className={classes.tabLink}
                   component={Link}
                   to='/categories' />}
 
-                />
+            />
               </Tabs>
 
 
@@ -145,14 +176,16 @@ class App extends Component {
                 <BooksTable
                   className="table"
                   library={this.state.library}
+                  onClickDelete={this.deleteBook}
+                  onClickEdit={this.openEditModal}
                 />
               )} />
 
 
               <Route exact path="/categories" render={() => (
-                <Categories 
-                categories = {this.state.categories}
-                onClickChip = {this.showBooksByCategory}
+                <Categories
+                  categories={this.state.categories}
+                  onClickChip={this.showBooksByCategory}
                 />
               )} />
 
@@ -160,6 +193,11 @@ class App extends Component {
             </div>
           </HashRouter>
 
+          <SimpleModal
+          visible={this.state.editVisible}
+          onClose={this.closeEditModal}
+          bookId = {this.state.editBookId}
+          />
         </main>
       </div>
     );

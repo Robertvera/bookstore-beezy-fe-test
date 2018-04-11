@@ -42,6 +42,55 @@ const bookstore = {
         })
     },
 
+    getOneBook: (id) => {
+        return Promise.resolve()
+        .then(()=> {
+            let position
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].id === id) {
+                    position = i
+                    break;
+                }
+            }
+            return library[position]
+        })
+    },
+
+    deleteBook: (id) => {
+        return Promise.resolve()
+        .then(()=> {
+            let position
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].id === id) {
+                    position = i
+                    break;
+                }
+            }
+            library.splice(position,1)
+            
+            return library
+        })
+
+    },
+
+    editBook: (id, title, category, price) => {
+        return Promise.resolve()
+        .then(()=> {
+            let position
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].id === id) {
+                    position = i
+                    break;
+                }
+            }
+            library[position].title = title
+            library[position].category = category
+            library[position].price = price
+
+            return library
+        })
+    },
+
     createCategory: (name, bookCount) => {
         return Promise.resolve()
         .then(()=> {

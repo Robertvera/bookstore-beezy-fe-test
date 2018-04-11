@@ -6,10 +6,21 @@ import Delete from 'material-ui-icons/Delete';
 import Edit from 'material-ui-icons/Edit';
 
 
-
 class BooksTable extends Component {    
+    constructor(props) {
+        super(props)        
+    }
+    
     
                 
+    deleteBook = (id) => {
+        this.props.onClickDelete(id)                
+    }
+
+    editBook = (id) => {
+        this.props.onClickEdit(id)
+    }
+
     render(props) {
 
         const {library} = this.props ? this.props : [];
@@ -32,7 +43,14 @@ class BooksTable extends Component {
                             <TableCell>{book.title}</TableCell>
                             <TableCell>{book.category}</TableCell>
                             <TableCell numeric>{book.price} €</TableCell>
-                            <TableCell><Edit/><Delete/></TableCell>  
+                            <TableCell>
+                                <Edit
+                                onClick={(e)=> {e.preventDefault; this.editBook(book.id)}}
+                                />
+                                <Delete
+                                onClick={(e)=> {e.preventDefault; this.deleteBook(book.id)}}
+                                />
+                            </TableCell>  
                         </TableRow>
                         </TableBody>
                     })}                    

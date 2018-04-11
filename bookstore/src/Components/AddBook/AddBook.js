@@ -56,7 +56,7 @@ class AddBook extends Component {
                     label="Title"
                     margin="normal"
                     name="title"
-                    onChange = {this.handleChange}
+                    onChange = {this.handleChange}                    
                 />
 
                 <TextField
