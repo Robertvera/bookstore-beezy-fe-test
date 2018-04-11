@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom'
 import Card, { CardActions, CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import './Categories.css'
@@ -12,155 +13,43 @@ class Categories extends Component {
         // }
     }
 
-    handleClick = () => {
-        return alert('hola k ase')
+    handleClick = (category) => {        
+        this.props.onClickChip(category)
+        this.props.history.push("/")
     }
 
     render() {
+
+        const { categories } = this.props ? this.props : [];
+
         return (
             <div className='categories-container'>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                        </Typography>
-                        <Chip
-                            avatar={<Avatar>10</Avatar>}
-                            label="Books"
-                            onClick={this.handleClick}
-                        />
-                    </CardContent>
-                    <CardActions>
 
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
+                {categories.map((category) => {
+                    return <Card className='category-card'>
+                        <CardContent>
+                            <Typography variant="headline" component="h2">
+                                {category.name}
+                            </Typography>
+                            <Chip
+                                avatar={<Avatar>{category.bookCount === 0 ? '0' : category.bookCount}</Avatar>}
+                                label="Books"
+                                onClick={(e)=> {e.preventDefault; this.handleClick(category.name)}}
+                            />
+                        </CardContent>
+                        <CardActions>
 
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
+                        </CardActions>
+                    </Card>
+                })}
 
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
-                <Card className='category-card'>
-                    <CardContent>
-                        <Typography variant="headline" component="h2">
-                            benevolent
-                    </Typography>
-                    </CardContent>
-                    <CardActions>
-
-                    </CardActions>
-                </Card>
             </div>
 
-                )
-            }
-        
-        
-        
-        }
-        
+        )
+    }
+
+
+
+}
+
 export default Categories;

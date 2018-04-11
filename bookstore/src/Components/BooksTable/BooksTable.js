@@ -5,15 +5,15 @@ import './BooksTable.css'
 import Delete from 'material-ui-icons/Delete';
 import Edit from 'material-ui-icons/Edit';
 
-class BooksTable extends Component {
-    constructor(props) {
-        super(props)
-        // this.state = {         
-        // }
-    }
 
 
-    render() {
+class BooksTable extends Component {    
+    
+                
+    render(props) {
+
+        const {library} = this.props ? this.props : [];
+
         return (
             <Paper className='table-container'>
                 <Table className='table'>
@@ -25,18 +25,23 @@ class BooksTable extends Component {
                             <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
-                    <TableBody>
-                        <TableRow key='0'>
-                            <TableCell>Lord of The Rings</TableCell>
-                            <TableCell>Sci-Fi</TableCell>
-                            <TableCell numeric>50 €</TableCell>
+
+                    {library.map(book=> {
+                        return <TableBody key={book.id}>
+                        <TableRow>
+                            <TableCell>{book.title}</TableCell>
+                            <TableCell>{book.category}</TableCell>
+                            <TableCell numeric>{book.price} €</TableCell>
                             <TableCell><Edit/><Delete/></TableCell>  
                         </TableRow>
-                    </TableBody>
+                        </TableBody>
+                    })}                    
                 </Table>
             </Paper>
         )
+    
     }
+    
 
 
 

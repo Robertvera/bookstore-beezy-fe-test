@@ -1,111 +1,118 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Route, HashRouter } from 'react-router-dom'
+import { Route, HashRouter, Link } from 'react-router-dom'
 
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button'
-import AddIcon from 'material-ui-icons/Add';
-import MenuItem from 'material-ui/Menu/MenuItem';
-import TextField from 'material-ui/TextField';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Book from 'material-ui-icons/Book';
 import ContentPaste from 'material-ui-icons/ContentPaste';
 import BooksTable from './Components/BooksTable/BooksTable'
 import Categories from './Components/Categories/Categories'
+import AddBook from './Components/AddBook/AddBook'
+import AddCategory from './Components/AddCategory/AddCategory'
+import Or from './Components/OrAdd/OrAdd'
+import bookstore from './Function'
 
 
-const categories = ['History', 'Science', 'Sci-fi', 'Terror', 'Philosophy']
+
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedTab: 0
+      selectedTab: 0,
+      library: [],
+      categories: []
     }
+  }
+
+
+  componentDidMount = () => {
+    bookstore.listBooks()
+    .then((library)=> {this.setState({library})})
+    .then(()=> {
+      bookstore.listCategories()
+      .then((categories)=>{this.setState({categories})})
+    })
   }
 
   handleChange = (event, selectedTab) => {
     this.setState({ selectedTab });
   };
 
+  updateLibrary = () => {
+    bookstore.listBooks()
+      .then(library => {
+        this.setState({ library })
+      })
+      .then(()=>{
+        this.updateCategories()
+      })
+  }
+
+  updateCategories = () => {
+    bookstore.listCategories()
+    .then(categories=> {
+      let _categories = []
+      categories.map(category => {
+        return bookstore.getBooksByCategory(category.name)
+        .then(filteredBooks=> {
+          let name = category.name
+          let bookCount = filteredBooks.length
+          _categories.push({name, bookCount})
+        })
+        .then(()=>this.setState({categories: _categories}))
+
+      })
+    })
+  }
+
+  showBooksByCategory = (category) => {
+    bookstore.getBooksByCategory(category)
+    .then(filteredBooks=>this.setState({library: filteredBooks}))
+  }
+
 
   render() {
+
+    const classes  = {
+      tabLink: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }
+    }
+
+
     return (
       <div className="App">
+
         <AppBar className='top-bar'>
           <Toolbar>
             <h1 className='logo'><span role='img' aria-label='book'>📗</span> Bookstore</h1>
           </Toolbar>
         </AppBar>
+
         <main className="container">
+
           <div className="adding-area">
 
+            <AddBook
+              onCreateNewBook={this.updateLibrary}
+              categories = {this.state.categories}
+            />
+            <Or />
+            <AddCategory 
+              onCreateNewCategory={this.updateCategories}
+            />
 
-
-            <div className="add-book">
-
-              <h2>Add a book</h2>
-
-              <TextField
-                className="input-book-name"
-                label="Name"
-                margin="normal"
-              />
-
-              <TextField
-                className="input-book-category"
-                select
-                label="Category"
-                value=''
-                margin="normal"
-              >
-                {categories.map(category => {
-                  return <MenuItem key={category} value={category}>
-                    {category}
-                  </MenuItem>
-                })}
-              </TextField>
-
-              <TextField
-                className="input-book-price"
-                label="Price"
-                type="number"
-                margin="normal"
-              />
-              <div className="button-add">
-                <Button variant="fab" color="primary" aria-label="add">
-                  <AddIcon />
-                </Button>
-              </div>
-            </div>
-
-            <div className="adding-link">
-              <h1>or...</h1>
-            </div>
-
-            <div className="add-category">
-              <h2>Add a Category</h2>
-
-              <TextField
-                className="input-category"
-                label="Name"
-                margin="normal"
-              />
-
-
-              <div className="button-add">
-                <Button variant="fab" color="primary" aria-label="add">
-                  <AddIcon />
-                </Button>
-              </div>
-            </div>
           </div>
 
-
-
           <HashRouter>
+
             <div className="content-area">
+
 
 
               <Tabs
@@ -116,27 +123,42 @@ class App extends Component {
                 indicatorColor="secondary"
                 textColor="secondary"
               >
-                <Tab icon={<Book />} label="BOOKS" />
-                <Tab icon={<ContentPaste />} label="CATEGORIES" />
+                <Tab icon={<Book />}
+                  label="BOOKS"
+                  className={classes.tabLink}
+                  component={Link}
+                  to='/' />}
+
+                />
+                <Tab icon={<ContentPaste />}
+                  label="CATEGORIES"
+                  className={classes.tabLink}
+                  component={Link}
+                  to='/categories' />}
+
+                />
               </Tabs>
 
 
+
               <Route exact path="/" render={() => (
-                <BooksTable className="table" />
+                <BooksTable
+                  className="table"
+                  library={this.state.library}
+                />
               )} />
 
 
               <Route exact path="/categories" render={() => (
-                <Categories />
+                <Categories 
+                categories = {this.state.categories}
+                onClickChip = {this.showBooksByCategory}
+                />
               )} />
 
 
             </div>
           </HashRouter>
-
-
-
-
 
         </main>
       </div>
