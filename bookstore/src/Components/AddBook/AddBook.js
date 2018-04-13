@@ -15,21 +15,17 @@ class AddBook extends Component {
         }
     }
     
-    // componentDidMount = () => {
-    //     bookstore.listCategories()
-    //     .then((categories)=> {
-    //         this.setState({categories})
-    //     })
-    // }
-    
-      newBook = (title, genre, price) => {
+      newBook = (e, title, genre, price) => {
+          e.preventDefault()
         bookstore.createBook(this.state.book.title, this.state.book.category, this.state.book.price )
+        .then(()=> {
+            this.props.onCreateNewBook()
+        })
         .then(()=> {
             this.setState({
                 book:''
-            })
+            })            
         })
-        this.props.onCreateNewBook()
       }
 
       handleChange = (e) => {
@@ -48,15 +44,16 @@ class AddBook extends Component {
 
         return (
             <div className="add-book">
+            <form onSubmit={e => { this.newBook(e) }}>
 
                 <h2>Add a book</h2>
-
                 <TextField
                     className="input-book-name"
                     label="Title"
                     margin="normal"
                     name="title"
-                    onChange = {this.handleChange}                    
+                    onChange = {this.handleChange}   
+                    defaultValue=''                 
                 />
 
                 <TextField
@@ -82,17 +79,21 @@ class AddBook extends Component {
                     name="price"
                     margin="normal"
                     onChange = {this.handleChange}
+                    defaultValue=''
                 />
                 <div className="button-add">
                     <Button
                         variant="fab"
                         color="primary"
                         aria-label="add"
-                        onClick={this.newBook}
+                        type="submit"
+                        // onClick={this.newBook}
+                        
                     >
                         <AddIcon />
                     </Button>
                 </div>
+            </form>
             </div>
         )
     }

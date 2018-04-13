@@ -65,6 +65,14 @@ class SimpleModal extends Component {
         this.setState({ book });
     }
 
+    editBook = () => {        
+        const {id, title, category, price} = this.state.book
+        bookstore.editBook(id, title, category, price)
+        .then(()=>{
+            this.props.onClose()
+        })
+    }
+
     render() {
         const { classes } = this.props;
         const { book, categories } = this.state

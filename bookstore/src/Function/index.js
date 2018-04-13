@@ -1,5 +1,6 @@
 import uuid from 'uuid/v4'
 
+
 class Book {
     constructor(id, title, category, price) {
         this.id = id
@@ -18,11 +19,7 @@ class Category {
     }
 }
 
-let cat1 = new Category("Sci-fi", 0)
-let cat2 = new Category("History", 0)
-let cat3 = new Category("Science", 0)
-
-const categories = [cat1, cat2, cat3]
+const categories = []
 
 const bookstore = {
     createBook: (title, category, price) => {
@@ -119,5 +116,14 @@ const bookstore = {
 
 
 }
+
+bookstore.createCategory("Sci-fi", 1)
+bookstore.createCategory("History", 1)
+bookstore.createCategory("Science", 1)
+
+bookstore.createBook('Foundation', 'Sci-fi', 30)
+bookstore.createBook('Art of War', 'History', 85)
+bookstore.createBook('A Brief History of Time', 'Science', 25)
+
 
 export default bookstore

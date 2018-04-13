@@ -95,14 +95,14 @@ class App extends Component {
   }
 
   closeEditModal = () => {
+    this.updateLibrary()
+    this.updateCategories()
     this.setState(
       { editVisible: false }
     )
   }
 
-  editBook = (id) => {
-
-  }
+  
 
 
   render() {
